@@ -4,6 +4,8 @@
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.38+-red.svg)](https://streamlit.io)
 [![Ollama](https://img.shields.io/badge/Ollama-LLM-green.svg)](https://ollama.com)
 [![HuggingFace](https://img.shields.io/badge/🤗-HuggingFace-yellow.svg)](https://huggingface.co/SemihBekdas)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
+[![Rapor](https://img.shields.io/badge/📄-Proje%20Raporu-blue.svg)](Rapor.pdf)
 
 Bu repo, Türkçe sağlık alanındaki hasta–doktor etkileşimlerini desteklemek için geliştirilen iki bileşenli bir NLP sistemi içerir:
 1. **Branş Yönlendirme:** Hasta sorusundan uygun doktor uzmanlık alanını tahmin eden 16 sınıflı metin sınıflandırma
@@ -100,21 +102,17 @@ Lisans/erişim notu: `alibayram/doktorsitesi` veri seti HF üzerinde “gated”
 ## 📁 Proje Yapısı
 
 ```
-├── streamlit_app.py              # Ana Streamlit uygulaması
-├── Modelfile                     # Ollama model konfigürasyonu
+├── streamlit_app.py              # Ana Streamlit uygulaması (3 sütunlu arayüz)
+├── gradio_app.py                 # Alternatif Gradio arayüzü (paylaşılabilir link, opsiyonel auth)
+├── Modelfile                     # Ollama model konfigürasyonu (Sina)
 ├── requirements.txt              # Python bağımlılıkları
-├── saved_models/                 # Klasik ML + Transformer ağırlıkları
-│   ├── ml/
-│   ├── berturk-doctorsitesi-best/
-│   └── xlmr-doctorsitesi-best/
-├── outputs/                      # Eğitim grafikleri ve confusion matrix görselleri
-├── NlpPipeline.ipynb             # ML + Transformer eğitim pipeline
-├── Llama3_1_(8B).ipynb           # LLM fine-tuning (LoRA)
+├── NlpPipeline.ipynb             # Klasik ML + Transformer eğitim pipeline'ı
+├── Llama3_1_(8B).ipynb           # LLM fine-tuning (Unsloth + LoRA)
 ├── Rapor.pdf                     # Detaylı proje raporu
-└── sunum/                        # Sunum dosyaları
+└── LICENSE                       # MIT
 ```
 
-> Not: Uygulama `saved_models/` klasöründeki ağırlıkları bekler. Bu klasörler yoksa aynı isimlerle yerleştirmeniz gerekir.
+> Not: Uygulamalar eğitilmiş ağırlıkları `saved_models/` klasöründen okur; bu klasör boyutu nedeniyle repoda yer almaz. `NlpPipeline.ipynb` çalıştırıldığında `saved_models/ml/`, `saved_models/berturk-doctorsitesi-best/` ve `saved_models/xlmr-doctorsitesi-best/` klasörleri oluşur.
 
 ---
 
@@ -182,6 +180,15 @@ streamlit run streamlit_app.py
 
 Tarayıcıda `http://localhost:8501` adresine git.
 
+### Alternatif: Gradio arayüzü
+
+Aynı modelleri Gradio ile de sunabilirsiniz. Paylaşılabilir geçici link (`GRADIO_SHARE=1`, varsayılan) ve kullanıcı adı/parola koruması (`GRADIO_AUTH=kullanici:parola`) destekler.
+
+```bash
+pip install gradio
+python gradio_app.py
+```
+
 ---
 
 ## ⚙️ Konfigürasyon
@@ -191,6 +198,14 @@ Streamlit uygulaması aşağıdaki ortam değişkenlerini okur:
 ```bash
 export OLLAMA_MODEL=sina
 export OLLAMA_BASE_URL=http://localhost:11434
+```
+
+Gradio arayüzü için ek olarak:
+
+```bash
+export GRADIO_SHARE=1                 # 0 yaparsanız yalnızca yerel çalışır
+export GRADIO_QUEUE_SIZE=32
+export GRADIO_AUTH=kullanici:parola   # boş bırakılırsa auth yok
 ```
 
 `Modelfile` içeriği Ollama tarafındaki model davranışını belirler.
@@ -225,6 +240,12 @@ export OLLAMA_BASE_URL=http://localhost:11434
 - [LLM Eğitim Verisi](https://huggingface.co/datasets/kayrab/patient-doctor-qa-tr-167732)
 - [BERTurk](https://huggingface.co/dbmdz/bert-base-turkish-cased)
 - [Llama 3.1](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct)
+
+---
+
+## 📄 Lisans
+
+Bu projenin kodu [MIT Lisansı](LICENSE) ile sunulmaktadır. Kullanılan veri setleri ve temel modeller kendi lisanslarına tabidir (bkz. Veri Setleri bölümü).
 
 ---
 
